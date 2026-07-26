@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.fragment.compose.content
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.todoroo.astrid.gtasks.auth.GtasksLoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.tasks.R
 import org.tasks.compose.settings.GoogleTasksAccountScreen
+import org.tasks.gtasks.GoogleTasksSignInActivity
 import org.tasks.data.entity.CaldavAccount
 import org.tasks.preferences.BasePreferences
 import org.tasks.themes.TasksSettingsTheme
@@ -71,7 +71,7 @@ class GoogleTasksAccount : Fragment() {
 
     private fun requestLogin() {
         activity?.startActivityForResult(
-            Intent(activity, GtasksLoginActivity::class.java),
+            Intent(activity, GoogleTasksSignInActivity::class.java),
             MainSettingsComposeFragment.REQUEST_GOOGLE_TASKS
         )
     }

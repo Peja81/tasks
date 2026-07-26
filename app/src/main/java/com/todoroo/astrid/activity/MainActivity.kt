@@ -46,6 +46,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.todoroo.astrid.adapter.SubheaderClickHandler
 import com.todoroo.astrid.gtasks.auth.GtasksLoginActivity
+import org.tasks.gtasks.GoogleTasksSignInActivity
 import com.todoroo.astrid.service.TaskCreator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -302,7 +303,7 @@ class MainActivity : AppCompatActivity() {
 
                                 Platform.GOOGLE_TASKS ->
                                     syncLauncher.launch(
-                                        Intent(this@MainActivity, GtasksLoginActivity::class.java)
+                                        Intent(this@MainActivity, GoogleTasksSignInActivity::class.java)
                                     )
 
                                 Platform.MICROSOFT ->
