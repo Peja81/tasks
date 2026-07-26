@@ -25,6 +25,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build generic debug APK
+        env:
+          ORG_GRADLE_PROJECT_tasksGoogleTasksClientId: ${{ secrets.GOOGLE_TASKS_CLIENT_ID }}
+          ORG_GRADLE_PROJECT_tasksGoogleTasksClientSecret: ${{ secrets.GOOGLE_TASKS_CLIENT_SECRET }}
         run: ./gradlew :app:assembleGenericDebug
 
       - name: Upload APK
