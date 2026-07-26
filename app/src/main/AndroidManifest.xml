@@ -493,6 +493,10 @@
       android:theme="@style/TranslucentDialog"/>
 
     <activity
+      android:name=".gtasks.GoogleTasksSignInActivity"
+      android:theme="@style/Tasks"/>
+
+    <activity
       android:name=".drive.DriveLoginActivity"
       android:theme="@style/TranslucentDialog" />
 

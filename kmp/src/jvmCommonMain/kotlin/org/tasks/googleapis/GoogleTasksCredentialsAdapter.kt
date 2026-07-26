@@ -14,8 +14,9 @@ import java.io.IOException
 class GoogleTasksCredentialsAdapter(
     private val account: CaldavAccount,
     private val encryption: KeyStoreEncryption,
-    private val proxyAuthProvider: ProxyAuthProvider,
     private val caldavDao: CaldavDao,
+    private val proxyAuthProvider: ProxyAuthProvider? = null,
+    private val clientSecret: String? = null,
     private val oauthClient: TasksOAuthClient = TasksOAuthClient(),
 ) : CredentialsAdapter {
 
@@ -48,13 +49,14 @@ class GoogleTasksCredentialsAdapter(
     }
 
     private suspend fun refreshAndStore(data: GoogleTasksTokenData) {
-        val authHeader = proxyAuthProvider.getAuthHeader()
+        val authHeader = proxyAuthProvider?.getAuthHeader()
         val result = try {
             oauthClient.refreshToken(
                 tokenEndpoint = data.tokenEndpoint,
                 clientId = data.clientId,
                 refreshToken = data.refreshToken,
                 authHeader = authHeader,
+                clientSecret = clientSecret,
             )
         } catch (e: Exception) {
             throw IOException("Token refresh failed: ${e.message}", e)

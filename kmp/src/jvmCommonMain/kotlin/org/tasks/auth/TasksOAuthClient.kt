@@ -80,6 +80,7 @@ class TasksOAuthClient(
         code: String,
         codeVerifier: String,
         authHeader: String? = null,
+        clientSecret: String? = null,
     ): OAuthResult {
         val formBody = FormBody.Builder()
             .add("grant_type", "authorization_code")
@@ -87,6 +88,7 @@ class TasksOAuthClient(
             .add("redirect_uri", config.redirectUri)
             .add("code", code)
             .add("code_verifier", codeVerifier)
+            .apply { clientSecret?.let { add("client_secret", it) } }
             .build()
 
         val request = Request.Builder()
@@ -134,11 +136,13 @@ class TasksOAuthClient(
         clientId: String,
         refreshToken: String,
         authHeader: String? = null,
+        clientSecret: String? = null,
     ): RefreshResult {
         val formBody = FormBody.Builder()
             .add("grant_type", "refresh_token")
             .add("client_id", clientId)
             .add("refresh_token", refreshToken)
+            .apply { clientSecret?.let { add("client_secret", it) } }
             .build()
 
         val request = Request.Builder()

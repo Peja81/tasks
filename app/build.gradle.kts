@@ -55,6 +55,11 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         testInstrumentationRunner = "org.tasks.TestRunner"
+
+        val tasksGoogleTasksClientId: String? by project
+        val tasksGoogleTasksClientSecret: String? by project
+        resValue("string", "google_tasks_client_id", tasksGoogleTasksClientId ?: "")
+        resValue("string", "google_tasks_client_secret", tasksGoogleTasksClientSecret ?: "")
     }
 
     signingConfigs {

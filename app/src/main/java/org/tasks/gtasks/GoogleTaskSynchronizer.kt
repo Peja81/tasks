@@ -1,5 +1,7 @@
 package org.tasks.gtasks
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.jetbrains.compose.resources.getString
 import org.tasks.R
 import org.tasks.analytics.Firebase
@@ -16,11 +18,14 @@ import org.tasks.data.entity.CaldavAccount
 import org.tasks.filters.CaldavFilter
 import org.tasks.googleapis.DefaultListProvider
 import org.tasks.googleapis.GoogleTaskSynchronizer
+import org.tasks.googleapis.GoogleTasksCredentialsAdapter
+import org.tasks.googleapis.GtasksInvoker
 import org.tasks.googleapis.GtasksListService
 import org.tasks.googleapis.InvokerFactory
 import org.tasks.preferences.AppPreferences
 import org.tasks.preferences.DefaultFilterProvider
 import org.tasks.preferences.Preferences
+import org.tasks.security.KeyStoreEncryption
 import org.tasks.service.TaskCompleter
 import org.tasks.service.TaskDeleter
 import tasks.kmp.generated.resources.Res
@@ -28,6 +33,7 @@ import tasks.kmp.generated.resources.cannot_access_account
 import javax.inject.Inject
 
 class AndroidGoogleTaskSynchronizer @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val googleAccountManager: GoogleAccountManager,
     private val invokerFactory: InvokerFactory,
     private val caldavDao: CaldavDao,
@@ -45,6 +51,7 @@ class AndroidGoogleTaskSynchronizer @Inject constructor(
     private val taskCreator: TaskCreator,
     private val repeatTaskHelper: RepeatTaskHelper,
     private val taskCompleter: TaskCompleter,
+    private val encryption: KeyStoreEncryption,
 ) {
     private val defaultListProvider = object : DefaultListProvider {
         override suspend fun getDefaultList(): CaldavFilter =
@@ -73,6 +80,21 @@ class AndroidGoogleTaskSynchronizer @Inject constructor(
     )
 
     suspend fun sync(account: CaldavAccount) {
+        // accounts created via the modern OAuth sign-in carry a stored refresh token;
+        // older accounts created through the Android account manager do not
+        if (!account.password.isNullOrBlank()) {
+            val invoker = GtasksInvoker(
+                GoogleTasksCredentialsAdapter(
+                    account = account,
+                    encryption = encryption,
+                    caldavDao = caldavDao,
+                    clientSecret = context.getString(R.string.google_tasks_client_secret)
+                        .takeIf { it.isNotBlank() },
+                )
+            )
+            synchronizer.sync(account, invoker)
+            return
+        }
         if (googleAccountManager.getAccount(account.username) == null) {
             account.error = getString(Res.string.cannot_access_account)
             caldavDao.update(account)

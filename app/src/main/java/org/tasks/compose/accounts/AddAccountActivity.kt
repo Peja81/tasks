@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.todoroo.astrid.gtasks.auth.GtasksLoginActivity
+import org.tasks.gtasks.GoogleTasksSignInActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.tasks.R
 import org.tasks.analytics.Firebase
@@ -78,7 +79,7 @@ class AddAccountActivity : ComponentActivity() {
             Platform.TASKS_ORG ->
                 syncLauncher.launch(Intent(this, SignInActivity::class.java))
             Platform.GOOGLE_TASKS ->
-                syncLauncher.launch(Intent(this, GtasksLoginActivity::class.java))
+                syncLauncher.launch(Intent(this, GoogleTasksSignInActivity::class.java))
             Platform.MICROSOFT ->
                 microsoftVM.signIn(this)
             Platform.CALDAV ->
