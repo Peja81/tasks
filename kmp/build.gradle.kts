@@ -70,6 +70,7 @@ kotlin {
                 exclude(group = "org.ogce", module = "xpp3")
             }
             api(libs.google.api.tasks)
+            implementation(libs.okhttp.dnsoverhttps)
             compileOnly(libs.xpp3)
             compileOnly(files("../libs/client-jvm-2.3.2.jar"))
         }

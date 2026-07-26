@@ -4,10 +4,32 @@ import co.touchlab.kermit.Logger
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.Dns
 import okhttp3.FormBody
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.dnsoverhttps.DnsOverHttps
+import java.net.InetAddress
 import java.net.URLEncoder
+import java.net.UnknownHostException
+
+/**
+ * Some Android devices/carriers fail to resolve googleapis.com via the system DNS resolver
+ * (a known Android bug), even though the browser resolves it fine using its own DNS.
+ * Falls back to DNS-over-HTTPS (the same approach browsers use) when the system resolver fails.
+ */
+private class FallbackDns(
+    private val primary: Dns,
+    private val fallback: Dns,
+) : Dns {
+    override fun lookup(hostname: String): List<InetAddress> = try {
+        primary.lookup(hostname)
+    } catch (e: UnknownHostException) {
+        Logger.w("TasksOAuthClient") { "System DNS failed for $hostname, falling back to DNS-over-HTTPS" }
+        fallback.lookup(hostname)
+    }
+}
 
 data class OAuthConfig(
     val authorizationEndpoint: String,
@@ -33,9 +55,20 @@ class TasksOAuthClient(
 ) {
     companion object {
         private val sharedHttpClient: OkHttpClient by lazy {
-            OkHttpClient.Builder()
+            val bootstrapClient = OkHttpClient.Builder()
                 .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+                .build()
+            val dnsOverHttps = DnsOverHttps.Builder()
+                .client(bootstrapClient)
+                .url("https://dns.google/dns-query".toHttpUrl())
+                .bootstrapDnsHosts(
+                    InetAddress.getByName("8.8.8.8"),
+                    InetAddress.getByName("8.8.4.4"),
+                )
+                .build()
+            bootstrapClient.newBuilder()
+                .dns(FallbackDns(Dns.SYSTEM, dnsOverHttps))
                 .build()
         }
     }
