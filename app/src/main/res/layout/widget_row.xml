@@ -22,50 +22,64 @@
   <ImageView
     android:id="@+id/top_padding"
     android:layout_alignParentTop="true"
-    android:layout_alignStart="@id/widget_text"
+    android:layout_alignStart="@id/widget_title_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/widget_padding"
     tools:ignore="ContentDescription" />
 
-  <TextView
-    android:id="@+id/widget_due_end"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignBaseline="@id/widget_text"
-    android:layout_alignParentEnd="true"
-    android:ellipsize="end"
-    android:gravity="start|center_vertical"
-    android:singleLine="true"
-    android:textAlignment="viewStart"
-    android:textSize="14sp"
-    android:background="@drawable/widget_ripple_circle_light"
-    tools:text="Tomorrow"
-    tools:paddingEnd="@dimen/widget_padding"
-    tools:textColor="@color/black_60"/>
-
-  <TextView
-    android:id="@+id/widget_text"
+  <LinearLayout
+    android:id="@+id/widget_title_row"
     android:layout_toEndOf="@id/widget_complete_box"
-    android:layout_toStartOf="@id/widget_due_end"
     android:layout_below="@id/top_padding"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingEnd="@dimen/widget_padding"
-    android:paddingStart="0dp"
-    android:gravity="start|center_vertical"
-    android:maxLines="1"
-    android:ellipsize="end"
-    android:textAlignment="viewStart"
-    android:textSize="16sp"
-    tools:text="Task title"
-    tools:textColor="@color/black_87"/>
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <TextView
+      android:id="@+id/widget_text"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:paddingEnd="@dimen/widget_padding"
+      android:paddingStart="0dp"
+      android:gravity="start|center_vertical"
+      android:maxLines="1"
+      android:ellipsize="end"
+      android:textAlignment="viewStart"
+      android:textSize="16sp"
+      tools:text="Task title"
+      tools:textColor="@color/black_87"/>
+
+    <LinearLayout
+      android:id="@+id/subtask_chip_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:paddingStart="4dp"
+      android:orientation="horizontal" />
+
+    <TextView
+      android:id="@+id/widget_due_end"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:gravity="start|center_vertical"
+      android:singleLine="true"
+      android:textAlignment="viewStart"
+      android:textSize="14sp"
+      android:background="@drawable/widget_ripple_circle_light"
+      tools:text="Tomorrow"
+      tools:paddingEnd="@dimen/widget_padding"
+      tools:textColor="@color/black_60"/>
+
+  </LinearLayout>
 
   <TextView
     android:id="@+id/widget_description"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/widget_text"
+    android:layout_below="@id/widget_title_row"
     android:layout_toEndOf="@id/widget_complete_box"
     android:paddingTop="2dp"
     android:paddingStart="0dp"
@@ -105,7 +119,7 @@
   <ImageView
     android:id="@+id/bottom_padding"
     android:layout_below="@id/chips"
-    android:layout_alignStart="@id/widget_text"
+    android:layout_alignStart="@id/widget_title_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/widget_padding"

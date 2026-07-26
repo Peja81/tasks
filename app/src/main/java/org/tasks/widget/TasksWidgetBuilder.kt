@@ -199,9 +199,10 @@ internal class TasksWidgetBuilder(
                     setViewVisibility(R.id.divider, View.GONE)
                 }
                 removeAllViews(R.id.chips)
+                removeAllViews(R.id.subtask_chip_container)
                 if (settings.showSubtaskChips && taskContainer.hasChildren()) {
                     val chip = chipProvider.getSubtaskChip(taskContainer)
-                    addView(R.id.chips, chip)
+                    addView(R.id.subtask_chip_container, chip)
                     setOnClickFillInIntent(
                         R.id.chip,
                         Intent(WidgetClickActivity.TOGGLE_SUBTASKS)
